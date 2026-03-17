@@ -1,11 +1,9 @@
 import { View, Text, FlatList, Button, Alert } from "react-native"
 import { useEffect, useState, useCallback } from "react"
-import { useRouter } from "expo-router"
 import { useFocusEffect } from "@react-navigation/native"
 import api from "../services/api"
 
-export default function ListaNotas() {
-  const router = useRouter()
+export default function ListaNotas({ navigation }) {
   const [notas, setNotas] = useState([])
 
   async function carregarNotas() {
@@ -57,7 +55,7 @@ export default function ListaNotas() {
 
       <Button
         title="Nova nota"
-        onPress={() => router.push("/criar-nota")}
+        onPress={() => navigation.navigate("CriarNota")}
       />
 
       <FlatList

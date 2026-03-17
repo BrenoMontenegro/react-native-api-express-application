@@ -1,14 +1,17 @@
 import { View, Text, TextInput, Button, Alert } from "react-native"
-import { useRouter } from "expo-router"
 import { useState } from "react"
 import api from "../services/api"
 
-export default function CriarNota() {
-  const router = useRouter()
+export default function CriarNota({ navigation }) {
   const [titulo, setTitulo] = useState("")
   const [conteudo, setConteudo] = useState("")
 
   async function salvarNota() {
+    if (!titulo || !conteudo) {
+      Alert.alert("Atenção", "Preencha todos os campos")
+      return
+    }
+
     try {
       await api.post("/notas", {
         titulo,
@@ -20,32 +23,47 @@ export default function CriarNota() {
       setTitulo("")
       setConteudo("")
 
-      router.back()
+      navigation.goBack()
     } catch (error) {
-      console.log(error)
-      Alert.alert("Erro ao criar nota")
+      console.log("Erro ao criar nota:", error)
+      Alert.alert("Erro", "Não foi possível criar a nota")
     }
   }
 
   return (
     <View style={{ padding: 20 }}>
-      <Text style={{ fontSize: 24 }}>Nova nota</Text>
+      <Text style={{ fontSize: 24, marginBottom: 10 }}>
+        Nova nota
+      </Text>
 
       <TextInput
         placeholder="Título"
         value={titulo}
         onChangeText={setTitulo}
-        style={{ borderWidth: 1, marginTop: 10, padding: 10 }}
+        style={{
+          borderWidth: 1,
+          marginTop: 10,
+          padding: 10,
+          borderRadius: 5
+        }}
       />
 
       <TextInput
         placeholder="Conteúdo"
         value={conteudo}
         onChangeText={setConteudo}
-        style={{ borderWidth: 1, marginTop: 10, padding: 10 }}
+        style={{
+          borderWidth: 1,
+          marginTop: 10,
+          padding: 10,
+          borderRadius: 5
+        }}
+        multiline
       />
 
-      <Button title="Salvar" onPress={salvarNota} />
+      <View style={{ marginTop: 15 }}>
+        <Button title="Salvar" onPress={salvarNota} />
+      </View>
     </View>
   )
 }
